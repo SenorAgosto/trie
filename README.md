@@ -1,10 +1,10 @@
 # trie
 
-A fixed key-size trie implementation. 
+A fixed size trie implementation. 
 
 ### Dependencies 
 
-- none 
+- C++11 
 
 Used for unit testing on all platforms:
 
