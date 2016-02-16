@@ -22,18 +22,16 @@ namespace trie {
         Trie(const Value& value = Value());
 
         void insert(const KeyType (& key)[KeyLength], const Value& value);
-        void insert(const char * key, const Value& value);
         
         Value& operator[](const KeyType (& key)[KeyLength]);
         const Value& operator[](const KeyType (& key)[KeyLength]) const;
 
-        Value& operator[](const char * key);
-        const Value& operator[](const char * key) const;
-
     private:
-        std::size_t index(const KeyType* key) const;
+        std::size_t index(const KeyType* key, const std::size_t keyLength = KeyLength) const;
         
     private:
+        std::size_t levelOffset_[KeyLength];
+    
         static const std::size_t size = details::NumBlocks<KeySize, KeyLength>::value * KeySize;
         Value trie_[size];
     };
@@ -46,17 +44,20 @@ namespace trie {
         {
             trie_[i] = value;
         }
+        
+        static_assert(KeyLength >= 2, "A keysize of one doesn't make sense, use an array.");
+        
+        levelOffset_[0] = 0;
+        levelOffset_[1] = KeySize;
+        
+        for(std::size_t i = 2; i < KeyLength; ++i)
+        {
+            levelOffset_[i] = ((levelOffset_[i - 1] - levelOffset_[i -2]) * KeySize) + levelOffset_[i - 1];
+        }
     }
     
     template<typename Value, std::size_t KeyLength, typename KeyTraits>
     void Trie<Value, KeyLength, KeyTraits>::insert(const KeyType (&key)[KeyLength], const Value& value)
-    {
-        const std::size_t spot = index(key);
-        trie_[spot] = value;
-    }
-    
-    template<typename Value, std::size_t KeyLength, typename KeyTraits>
-    void Trie<Value, KeyLength, KeyTraits>::insert(const char* key, const Value& value)
     {
         const std::size_t spot = index(key);
         trie_[spot] = value;
@@ -75,7 +76,16 @@ namespace trie {
         const std::size_t spot = index(key);
         return trie_[spot];
     }
-    
+
+
+/*
+    template<typename Value, std::size_t KeyLength, typename KeyTraits>
+    void Trie<Value, KeyLength, KeyTraits>::insert(const char* key, const Value& value)
+    {
+        const std::size_t spot = index(key);
+        trie_[spot] = value;
+    }
+
     template<typename Value, std::size_t KeyLength, typename KeyTraits>
     Value& Trie<Value, KeyLength, KeyTraits>::operator[](const char * key)
     {
@@ -89,14 +99,21 @@ namespace trie {
         const std::size_t spot = index(key);
         return trie_[spot];
     }
-    
-    template<typename Value, std::size_t KeyLength, typename KeyTraits>
-    std::size_t Trie<Value, KeyLength, KeyTraits>::index(const KeyType* key) const
-    {
-        // TODO: implement
-        (void)key;
-        return 0;
-    }
+*/
 
-    
+    template<typename Value, std::size_t KeyLength, typename KeyTraits>
+    std::size_t Trie<Value, KeyLength, KeyTraits>::index(const KeyType* key, const std::size_t keyLength) const
+    {
+        const std::size_t length = std::min(keyLength, KeyLength) - 1;
+        std::size_t index = levelOffset_[length];
+        
+        for(std::size_t i = 0; i < length; ++i)
+        {
+            index += KeyTraits::map(key[i]) * KeySize;
+        }
+        
+        // last spot in the key doesn't jump us forward.
+        index += KeyTraits::map(key[length]);
+        return index;
+    }
 }

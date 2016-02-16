@@ -8,7 +8,7 @@ namespace trie { namespace traits {
         typedef std::uint8_t KeyType;
         enum { size = 10 };
         
-        inline std::size_t map(const KeyType key) const { return key; }
+        static inline std::size_t map(const KeyType key) { return key; }
     };
     
     // use when our input values will be character digits '0'-'9'
@@ -17,7 +17,7 @@ namespace trie { namespace traits {
         typedef char KeyType;
         enum { size = 10 };
         
-        inline std::size_t map(const KeyType key) const { return key ^ '0'; }
+        static inline std::size_t map(const KeyType key) { return key ^ '0'; }
     };
     
     // use when our input values will be ASCII characters
@@ -26,7 +26,7 @@ namespace trie { namespace traits {
         typedef char KeyType;
         enum { size = 256 };
         
-        inline std::size_t map(const KeyType key) const { return key; }
+        static inline std::size_t map(const KeyType key) { return key; }
     };
     
 }}

@@ -46,10 +46,10 @@ namespace {
     TEST_FIXTURE(TrieFixture, verifyBracketOperatorCanBeCalled)
     {
         TrieTraits::KeyType key[keyLength] = { 0, 0, 0, 0};
-        trie.insert(key, 100);
+        trie.insert(key, 42);
         
         ValueType& value = trie[key];
-        CHECK_EQUAL(100U, value);
+        CHECK_EQUAL(42U, value);
     }
     
     TEST_FIXTURE(TrieFixture, verifyConstBracketOperatorCanBeCalled)
@@ -79,12 +79,13 @@ namespace {
         trie.insert(key, 10);
     }
     
+/*
     TEST_FIXTURE(TrieFixtureCharDigitsKey, verifyInsertWithCharPtrCanBeCalled)
     {
         const char* key = "123";
         trie.insert(key, 10);
     }
-    
+*/
     TEST_FIXTURE(TrieFixtureCharDigitsKey, verifyCharDigitsTrieBracketOperatorCanBeCalled)
     {
         TrieTraits::KeyType key[] = "123";
@@ -105,6 +106,7 @@ namespace {
         CHECK_EQUAL(100U, value);
     }
 
+/*
     TEST_FIXTURE(TrieFixtureCharDigitsKey, verifyCharDigitsTrieBracketOperatorCanBeCalledWithCharPtrKey)
     {
         const char* key = "123";
@@ -124,5 +126,5 @@ namespace {
         
         CHECK_EQUAL(100U, value);
     }
-    
+*/    
 }
