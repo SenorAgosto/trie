@@ -76,16 +76,16 @@ namespace {
     TEST_FIXTURE(TrieFixtureCharDigitsKey, verifyInsertWithCharArray)
     {
         char key[] = "123";
-        trie.insert(key, 10);
+        trie.insert_charptr(key, strlen(key), 10);
     }
     
-/*
+
     TEST_FIXTURE(TrieFixtureCharDigitsKey, verifyInsertWithCharPtrCanBeCalled)
     {
         const char* key = "123";
-        trie.insert(key, 10);
+        trie.insert_charptr(key, strlen(key), 10);
     }
-*/
+
     TEST_FIXTURE(TrieFixtureCharDigitsKey, verifyCharDigitsTrieBracketOperatorCanBeCalled)
     {
         TrieTraits::KeyType key[] = "123";
@@ -105,26 +105,25 @@ namespace {
         
         CHECK_EQUAL(100U, value);
     }
-
-/*
-    TEST_FIXTURE(TrieFixtureCharDigitsKey, verifyCharDigitsTrieBracketOperatorCanBeCalledWithCharPtrKey)
+    
+    TEST_FIXTURE(TrieFixtureCharDigitsKey, verifyCharDigitsTrieFindOperatorCanBeCalledWithCharPtrKey)
     {
         const char* key = "123";
-        trie.insert(key, 100);
+        trie.insert_charptr(key, 2, 200);
+        trie.insert_charptr(key, 3, 300);
         
-        ValueType& value = trie[key];
-        CHECK_EQUAL(100U, value);
+        CHECK_EQUAL(200U, trie.find(key, 2));
+        CHECK_EQUAL(300U, trie.find(key, 3));
     }
     
-    TEST_FIXTURE(TrieFixtureCharDigitsKey, verifyCharDigitsTrieConstBracketOperatorCanBeCalledWithCharPtrKey)
+    TEST_FIXTURE(TrieFixtureCharDigitsKey, verifyCharDigitsTrieConstFind)
     {
         const char* key = "123";
-        trie.insert(key, 100);
+        trie.insert_charptr(key, 2, 100);
+        trie.insert_charptr(key, 3, 200);
         
         const Trie& constTrie = trie;
-        const ValueType& value = constTrie[key];
-        
-        CHECK_EQUAL(100U, value);
+        CHECK_EQUAL(100U, constTrie.find(key, 2));
+        CHECK_EQUAL(200U, constTrie.find(key, 3));
     }
-*/    
 }
